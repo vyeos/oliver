@@ -1,3 +1,9 @@
+import ThemeToggle from "@/components/theme-toggle";
+
 export default function Home() {
-  return <main>hello</main>;
+  return (
+    <main>
+      <ThemeToggle />
+    </main>
+  );
 }
