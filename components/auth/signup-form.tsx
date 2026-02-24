@@ -91,6 +91,7 @@ export function SignupForm() {
         setSubmitError(
           error.message ?? "Unable to create your account right now",
         );
+        return;
       }
     },
   });
@@ -109,188 +110,203 @@ export function SignupForm() {
   }
 
   return (
-    <CardContent>
-      <div className="mb-5 grid gap-2 sm:grid-cols-2">
-        <Button
-          type="button"
-          variant="outline"
-          className="h-10 w-full justify-center bg-background/70"
-          onClick={() => void handleSocialLogin("google")}
-        >
-          <GoogleIcon className="size-4" />
-          Google
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-10 w-full justify-center bg-background/70"
-          onClick={() => void handleSocialLogin("github")}
-        >
-          <GithubIcon className="size-4" />
-          GitHub
-        </Button>
-      </div>
+    <Card className="border-border/70 bg-card/90 w-full max-w-2xl rounded-3xl py-5 shadow-lg backdrop-blur">
+      <CardHeader className="space-y-2">
+        <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em]">
+          Signup
+        </p>
+        <CardTitle className="text-3xl tracking-tight">
+          Create your Oliver profile
+        </CardTitle>
+        <CardDescription>
+          Start posting updates, link commits, and join the developer
+          conversation.
+        </CardDescription>
+      </CardHeader>
 
-      <div className="mb-5 flex items-center gap-3">
-        <div className="bg-border h-px flex-1" />
-        <span className="text-muted-foreground text-xs font-medium uppercase tracking-[0.14em]">
-          or sign up with email
-        </span>
-        <div className="bg-border h-px flex-1" />
-      </div>
-
-      <form
-        className="space-y-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          void form.handleSubmit();
-        }}
-        noValidate
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.Field
-            name="fullName"
-            validators={{
-              onChange: ({ value }) => validateName(value),
-              onSubmit: ({ value }) => validateName(value),
-            }}
+      <CardContent>
+        <div className="mb-5 grid gap-2 sm:grid-cols-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-10 w-full justify-center bg-background/70"
+            onClick={() => void handleSocialLogin("google")}
           >
-            {(field) => {
-              const error = field.state.meta.errors[0];
-
-              return (
-                <div className="space-y-2 sm:col-span-2">
-                  <label htmlFor={field.name} className="text-sm font-medium">
-                    Full name
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      autoComplete="name"
-                      placeholder="Ada Lovelace"
-                      className="pl-10"
-                      aria-invalid={field.state.meta.errors.length > 0}
-                    />
-                  </div>
-                  <FieldError message={error ? String(error) : undefined} />
-                </div>
-              );
-            }}
-          </form.Field>
-
-          <form.Field
-            name="email"
-            validators={{
-              onChange: ({ value }) => validateEmail(value),
-              onSubmit: ({ value }) => validateEmail(value),
-            }}
+            <GoogleIcon className="size-4" />
+            Google
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-10 w-full justify-center bg-background/70"
+            onClick={() => void handleSocialLogin("github")}
           >
-            {(field) => {
-              const error = field.state.meta.errors[0];
-
-              return (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium">
-                    Email
-                  </label>
-                  <div className="relative">
-                    <Mail01Icon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="email"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      autoComplete="email"
-                      placeholder="you@oliver.dev"
-                      className="pl-10"
-                      aria-invalid={field.state.meta.errors.length > 0}
-                    />
-                  </div>
-                  <FieldError message={error ? String(error) : undefined} />
-                </div>
-              );
-            }}
-          </form.Field>
-
-          <form.Field
-            name="password"
-            validators={{
-              onChange: ({ value }) => validatePassword(value),
-              onSubmit: ({ value }) => validatePassword(value),
-            }}
-          >
-            {(field) => {
-              const error = field.state.meta.errors[0];
-
-              return (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <LockPasswordIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="password"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      autoComplete="new-password"
-                      placeholder="At least 8 characters"
-                      className="pl-10"
-                      aria-invalid={field.state.meta.errors.length > 0}
-                    />
-                  </div>
-                  <FieldError message={error ? String(error) : undefined} />
-                </div>
-              );
-            }}
-          </form.Field>
+            <GithubIcon className="size-4" />
+            GitHub
+          </Button>
         </div>
 
-        {submitError ? (
-          <p className="bg-destructive/10 text-destructive rounded-md px-3 py-2 text-sm">
-            {submitError}
-          </p>
-        ) : null}
+        <div className="mb-5 flex items-center gap-3">
+          <div className="bg-border h-px flex-1" />
+          <span className="text-muted-foreground text-xs font-medium uppercase tracking-[0.14em]">
+            or sign up with email
+          </span>
+          <div className="bg-border h-px flex-1" />
+        </div>
 
-        <form.Subscribe selector={(state) => state.isSubmitting}>
-          {(isSubmitting) => (
-            <Button
-              type="submit"
-              className="h-10 w-full"
-              disabled={isSubmitting}
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void form.handleSubmit();
+          }}
+          noValidate
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <form.Field
+              name="fullName"
+              validators={{
+                onChange: ({ value }) => validateName(value),
+                onSubmit: ({ value }) => validateName(value),
+              }}
             >
-              {isSubmitting ? "Creating account..." : "Create account"}
-            </Button>
-          )}
-        </form.Subscribe>
+              {(field) => {
+                const error = field.state.meta.errors[0];
 
-        <p className="text-muted-foreground text-center text-sm">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-primary font-medium underline-offset-4 hover:underline"
-          >
-            Log in
-          </Link>
-        </p>
-      </form>
-    </CardContent>
+                return (
+                  <div className="space-y-2 sm:col-span-2">
+                    <label htmlFor={field.name} className="text-sm font-medium">
+                      Full name
+                    </label>
+                    <div className="relative">
+                      <UserIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        autoComplete="name"
+                        placeholder="Ada Lovelace"
+                        className="pl-10"
+                        aria-invalid={field.state.meta.errors.length > 0}
+                      />
+                    </div>
+                    <FieldError message={error ? String(error) : undefined} />
+                  </div>
+                );
+              }}
+            </form.Field>
+
+            <form.Field
+              name="email"
+              validators={{
+                onChange: ({ value }) => validateEmail(value),
+                onSubmit: ({ value }) => validateEmail(value),
+              }}
+            >
+              {(field) => {
+                const error = field.state.meta.errors[0];
+
+                return (
+                  <div className="space-y-2">
+                    <label htmlFor={field.name} className="text-sm font-medium">
+                      Email
+                    </label>
+                    <div className="relative">
+                      <Mail01Icon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type="email"
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        autoComplete="email"
+                        placeholder="you@oliver.dev"
+                        className="pl-10"
+                        aria-invalid={field.state.meta.errors.length > 0}
+                      />
+                    </div>
+                    <FieldError message={error ? String(error) : undefined} />
+                  </div>
+                );
+              }}
+            </form.Field>
+
+            <form.Field
+              name="password"
+              validators={{
+                onChange: ({ value }) => validatePassword(value),
+                onSubmit: ({ value }) => validatePassword(value),
+              }}
+            >
+              {(field) => {
+                const error = field.state.meta.errors[0];
+
+                return (
+                  <div className="space-y-2">
+                    <label htmlFor={field.name} className="text-sm font-medium">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <LockPasswordIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type="password"
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        autoComplete="new-password"
+                        placeholder="At least 8 characters"
+                        className="pl-10"
+                        aria-invalid={field.state.meta.errors.length > 0}
+                      />
+                    </div>
+                    <FieldError message={error ? String(error) : undefined} />
+                  </div>
+                );
+              }}
+            </form.Field>
+          </div>
+
+          {submitError ? (
+            <p className="bg-destructive/10 text-destructive rounded-md px-3 py-2 text-sm">
+              {submitError}
+            </p>
+          ) : null}
+
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <Button
+                type="submit"
+                className="h-10 w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Creating account..." : "Create account"}
+              </Button>
+            )}
+          </form.Subscribe>
+
+          <p className="text-muted-foreground text-center text-sm">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-primary font-medium underline-offset-4 hover:underline"
+            >
+              Log in
+            </Link>
+          </p>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

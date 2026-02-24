@@ -1,9 +1,3 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { LoginForm } from "@/components/auth/login-form";
 
 export default function LoginPage() {
@@ -25,28 +19,18 @@ export default function LoginPage() {
 
         <div className="text-muted-foreground mt-8 flex flex-wrap items-center gap-3 text-sm">
           <span className="bg-secondary text-secondary-foreground rounded-full px-3 py-1">
-            post updates
+            Post Updates
           </span>
           <span className="bg-secondary text-secondary-foreground rounded-full px-3 py-1">
-            link commits
+            Link Commits
           </span>
           <span className="bg-secondary text-secondary-foreground rounded-full px-3 py-1">
-            explore dev feeds
+            Explore Dev Feeds
           </span>
         </div>
       </section>
 
-      <Card className="border-border/70 bg-card/90 w-full rounded-3xl py-5 shadow-lg backdrop-blur">
-        <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl tracking-tight">
-            Welcome back
-          </CardTitle>
-          <CardDescription>
-            Log in to continue building your presence on Oliver.
-          </CardDescription>
-        </CardHeader>
-        <LoginForm />
-      </Card>
+      <LoginForm />
     </div>
   );
 }
