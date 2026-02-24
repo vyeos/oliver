@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "@tanstack/react-form";
 import {
@@ -20,6 +20,8 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 const emailSchema = z
   .string()
@@ -57,6 +59,15 @@ function FieldError({ message }: { message?: string }) {
 }
 
 export function LoginForm() {
+  const { user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [router, user]);
+
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const form = useForm({

@@ -1,13 +1,14 @@
 "use client";
+import LogoutButton from "@/components/auth/logout-button";
 import ThemeToggle from "@/components/theme-toggle";
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 
 export default function Home() {
-  const { user } = useUser();
+  const { isLoading, user } = useUser();
   return (
     <main>
-      {user ? user.name : "no user"}
+      <ThemeToggle />
       <Image
         src="/full.svg"
         alt="logo"
@@ -15,7 +16,8 @@ export default function Home() {
         width={200}
         className="bg-foreground rounded-2xl"
       />
-      <ThemeToggle />
+      {isLoading ? "Loading..." : user ? user.name : "no user"}
+      <LogoutButton size="default" />
     </main>
   );
 }

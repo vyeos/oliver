@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "@tanstack/react-form";
 import {
@@ -22,6 +22,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 const nameSchema = z
   .string()
@@ -69,6 +71,15 @@ function FieldError({ message }: { message?: string }) {
 }
 
 export function SignupForm() {
+  const { user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [router, user]);
+
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const form = useForm({
