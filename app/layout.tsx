@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${nunitoSans.className} ${nunitoSans.variable} antialiased m-2 p-4 border rounded-xl`}
+        className={`${nunitoSans.className} ${nunitoSans.variable} antialiased min-h-screen`}
       >
         <ThemeProvider
           attribute="class"

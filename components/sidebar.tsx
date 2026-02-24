@@ -44,7 +44,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="text-sidebar-foreground border-sidebar-border max-w-[220px] space-y-6 border-r pr-4">
+    <aside className="text-sidebar-foreground border-sidebar-border h-fit space-y-6 border-r pr-4 md:sticky md:top-4">
       <h1 className="font-serif text-4xl italic leading-none">oliver</h1>
 
       <nav className="space-y-1">
@@ -52,11 +52,11 @@ const Sidebar = () => {
           <Link
             key={link.name}
             href={link.href}
-            className=" text-sm tracking-wide transition-colors"
+            className="block"
           >
             <Button
               variant="ghost"
-              className="w-full h-full flex items-center justify-start gap-3"
+              className="h-10 w-full items-center justify-start gap-3 text-sm tracking-wide"
             >
               <link.icon className="size-4" />
               {link.name}
@@ -65,10 +65,12 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <Button className="w-full">
-        <AddSquareIcon className="size-4" />
-        Create Post
-      </Button>
+      <Link href="/create" className="block">
+        <Button className="w-full">
+          <AddSquareIcon className="size-4" />
+          Create Post
+        </Button>
+      </Link>
     </aside>
   );
 };
