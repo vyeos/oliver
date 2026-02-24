@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Group01Icon,
   Home01Icon,
@@ -22,6 +21,16 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -31,7 +40,6 @@ import {
 const Sidebar = () => {
   const { user } = useUser();
   const router = useRouter();
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const navLinks: {
     name: string;
@@ -96,10 +104,75 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <Button className="w-full" onClick={() => setIsCreateOpen(true)}>
-        <AddSquareIcon className="size-4" />
-        Create Post
-      </Button>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className="w-full">
+            <AddSquareIcon className="size-4" />
+            Create Post
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader className="-space-y-1">
+            <p className="text-muted-foreground text-xs uppercase tracking-[0.18em]">
+              Create
+            </p>
+            <DialogTitle className="font-serif text-2xl">
+              Write a new post
+            </DialogTitle>
+            <DialogDescription>
+              Draft a text update or link your post to a commit.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            className="space-y-4"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <div className="space-y-2">
+              <label htmlFor="dialogPostTitle" className="text-sm font-medium">
+                Title
+              </label>
+              <Input
+                id="dialogPostTitle"
+                placeholder="Ship notes, daily build log, or release update"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="dialogPostContent"
+                className="text-sm font-medium"
+              >
+                Content
+              </label>
+              <Textarea
+                id="dialogPostContent"
+                rows={6}
+                placeholder="What did you build today? Share context, decisions, and next steps."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="dialogCommitLink" className="text-sm font-medium">
+                Commit URL (optional)
+              </label>
+              <Input
+                id="dialogCommitLink"
+                placeholder="https://github.com/user/repo/commit/..."
+              />
+            </div>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Publish Post</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <div className="mt-auto pb-1">
         <DropdownMenu>
@@ -110,8 +183,12 @@ const Sidebar = () => {
             >
               <UserCircleIcon className="size-5" />
               <div className="flex min-w-0 flex-col items-start">
-                <span className="truncate text-sm font-medium">{displayName}</span>
-                <span className="text-muted-foreground truncate text-xs">{handle}</span>
+                <span className="truncate text-sm font-medium">
+                  {displayName}
+                </span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {handle}
+                </span>
               </div>
             </Button>
           </DropdownMenuTrigger>
@@ -124,61 +201,16 @@ const Sidebar = () => {
               <Settings02Icon className="size-4" />
               Settings
             </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onSelect={() => void handleLogout()}>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={() => void handleLogout()}
+            >
               <Logout01Icon className="size-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {isCreateOpen ? (
-        <div className="bg-foreground/40 fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="bg-card border-border w-full max-w-xl rounded-xl border p-5 shadow-xl">
-            <header className="mb-4 space-y-1">
-              <p className="text-muted-foreground text-xs uppercase tracking-[0.18em]">Create</p>
-              <h2 className="font-serif text-2xl">Write a new post</h2>
-              <p className="text-muted-foreground text-sm">
-                Draft a text update or link your post to a commit.
-              </p>
-            </header>
-
-            <form className="space-y-4" onSubmit={(event) => event.preventDefault()}>
-              <div className="space-y-2">
-                <label htmlFor="dialogPostTitle" className="text-sm font-medium">
-                  Title
-                </label>
-                <Input id="dialogPostTitle" placeholder="Ship notes, daily build log, or release update" />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="dialogPostContent" className="text-sm font-medium">
-                  Content
-                </label>
-                <Textarea
-                  id="dialogPostContent"
-                  rows={6}
-                  placeholder="What did you build today? Share context, decisions, and next steps."
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="dialogCommitLink" className="text-sm font-medium">
-                  Commit URL (optional)
-                </label>
-                <Input id="dialogCommitLink" placeholder="https://github.com/user/repo/commit/..." />
-              </div>
-
-              <div className="flex items-center justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">Publish Post</Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
     </aside>
   );
 };
