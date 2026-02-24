@@ -1,12 +1,15 @@
+"use client";
+
 import { Logout01Icon } from "hugeicons-react";
-import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useUserStore } from "@/store/useUserStore";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 const LogoutButton = ({
-  size,
+  size = "default",
 }: {
-  size:
+  size?:
     | "xs"
     | "sm"
     | "default"
@@ -16,9 +19,17 @@ const LogoutButton = ({
     | "icon"
     | "icon-lg";
 }) => {
-  const { clearUser } = useUserStore();
+  const clearUser = useUserStore((state) => state.clearUser);
+  const router = useRouter();
+
   const handleLogout = () => {
-    authClient.signOut();
+    authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
     clearUser();
   };
   return (
