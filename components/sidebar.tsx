@@ -43,7 +43,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-full h-full max-w-[220px] space-y-6 border-r border-[#d0c4bb] pr-4 text-[#221813]">
+    <aside className="text-sidebar-foreground border-sidebar-border h-full w-full max-w-[220px] space-y-6 border-r pr-4">
       <h1 className="font-serif text-4xl italic leading-none">oliver</h1>
 
       <nav className="space-y-1">
@@ -51,7 +51,7 @@ const Sidebar = () => {
           <Link
             key={link.name}
             href={link.href}
-            className="flex items-center gap-3 px-2 py-2 text-sm tracking-wide transition-colors hover:bg-[#f2e8df]"
+            className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex items-center gap-3 px-2 py-2 text-sm tracking-wide transition-colors"
           >
             <link.icon className="size-4" />
             {link.name}
@@ -59,7 +59,7 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <button className="flex w-full items-center justify-center gap-2 border border-[#221813] bg-[#221813] px-4 py-2 text-sm tracking-wide text-[#fffaf5] transition-colors hover:bg-[#4f3528]">
+      <button className="border-sidebar-primary bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/85 flex w-full items-center justify-center gap-2 border px-4 py-2 text-sm tracking-wide transition-colors">
         <AddSquareIcon className="size-4" />
         Create Post
       </button>
