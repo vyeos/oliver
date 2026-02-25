@@ -1,14 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { ImageIcon, MapPinIcon, SmileIcon, XIcon } from "lucide-react";
-import Link from "next/link";
+import {
+  ArrowLeftIcon,
+  ChevronDownIcon,
+  FileTextIcon,
+  ImageIcon,
+  MapPinIcon,
+  SmileIcon,
+  XIcon,
+} from "lucide-react";
 import { Button } from "./ui/button";
 
 type CreatePostModalProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   displayName: string;
+};
+
+type DraftPost = {
+  id: string;
+  title: string;
+  preview: string;
+  updatedAt: string;
+  postType: string;
+  content: string;
+  repo: string;
+  commit: string;
 };
 
 const CreatePostModal = ({
@@ -21,6 +39,42 @@ const CreatePostModal = ({
   const [postContent, setPostContent] = useState("");
   const [selectedRepo, setSelectedRepo] = useState("");
   const [selectedCommit, setSelectedCommit] = useState("");
+  const [activeView, setActiveView] = useState<"compose" | "drafts">("compose");
+  const drafts: DraftPost[] = [
+    {
+      id: "draft-1",
+      title: "Monorepo release update",
+      preview: "Working on release flow improvements for package sync...",
+      updatedAt: "Edited 2h ago",
+      postType: "everyone",
+      content:
+        "Working on release flow improvements for package sync and changelog automation.",
+      repo: "oliver-web",
+      commit: "a1b2c3d",
+    },
+    {
+      id: "draft-2",
+      title: "Infra cleanup notes",
+      preview: "Cut down duplicate workflows and standardized env files.",
+      updatedAt: "Edited yesterday",
+      postType: "followers",
+      content:
+        "Cut down duplicate workflows and standardized env files across build pipelines.",
+      repo: "infra-scripts",
+      commit: "d4e5f6g",
+    },
+    {
+      id: "draft-3",
+      title: "Design system cleanup",
+      preview: "Token naming pass and spacing scale alignment notes...",
+      updatedAt: "Edited 3d ago",
+      postType: "private",
+      content:
+        "Token naming pass and spacing scale alignment notes for next UI iteration.",
+      repo: "oliver-cli",
+      commit: "h7i8j9k",
+    },
+  ];
 
   const isDirty =
     postContent.trim() !== "" || selectedRepo !== "" || selectedCommit !== "";
@@ -34,6 +88,7 @@ const CreatePostModal = ({
 
   const closeAndReset = () => {
     setShowClosePrompt(false);
+    setActiveView("compose");
     resetForm();
     onOpenChange(false);
   };
@@ -46,118 +101,186 @@ const CreatePostModal = ({
     closeAndReset();
   };
 
+  const handleLoadDraft = (draft: DraftPost) => {
+    setPostType(draft.postType);
+    setPostContent(draft.content);
+    setSelectedRepo(draft.repo);
+    setSelectedCommit(draft.commit);
+    setActiveView("compose");
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="bg-foreground/45 absolute inset-0" onClick={handleCloseAttempt} />
-      <div className="bg-card text-card-foreground border-border relative flex h-auto w-full max-w-2xl flex-col overflow-hidden rounded-3xl border shadow-2xl">
-        <header className="flex items-center justify-between px-6 py-5">
-          <button
-            type="button"
-            onClick={handleCloseAttempt}
-            className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-            aria-label="Close create post"
-          >
-            <XIcon className="size-7" />
-          </button>
-          <Link
-            href="/drafts"
-            className="text-primary text-lg font-semibold transition-colors hover:opacity-80"
-          >
-            Drafts
-          </Link>
+      <div
+        className={
+          activeView === "drafts"
+            ? "bg-card text-card-foreground border-border relative flex h-auto min-h-[680px] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border shadow-2xl"
+            : "bg-card text-card-foreground border-border relative flex h-auto w-full max-w-2xl flex-col overflow-hidden rounded-3xl border shadow-2xl"
+        }
+      >
+        <header
+          className={
+            activeView === "drafts"
+              ? "flex items-center gap-2 px-6 py-5"
+              : "flex items-center justify-between px-6 py-5"
+          }
+        >
+          {activeView === "drafts" ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setActiveView("compose")}
+                className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                aria-label="Back to create post"
+              >
+                <ArrowLeftIcon className="size-7" />
+              </button>
+              <span className="text-lg font-semibold">Drafts</span>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={handleCloseAttempt}
+                className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                aria-label="Close create post"
+              >
+                <XIcon className="size-7" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView("drafts")}
+                className="text-primary cursor-pointer text-lg font-semibold transition-colors hover:opacity-80"
+              >
+                Drafts
+              </button>
+            </>
+          )}
         </header>
 
-        <form
-          className="flex h-full flex-col px-6 pb-5"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <div className="mb-5 flex items-center gap-4">
-            <div className="bg-muted ring-border text-foreground flex h-14 w-14 items-center justify-center rounded-full ring-2 text-sm font-semibold">
-              {displayName.slice(0, 1).toUpperCase()}
+        {activeView === "drafts" ? (
+          <div className="flex-1 px-6 pb-5">
+            <div className="space-y-3">
+              {drafts.map((draft) => (
+                <button
+                  key={draft.id}
+                  type="button"
+                  onClick={() => handleLoadDraft(draft)}
+                  className="bg-muted/50 border-border hover:bg-muted flex w-full cursor-pointer items-start gap-3 rounded-xl border p-4 text-left transition-colors"
+                >
+                  <div className="bg-primary/10 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
+                    <FileTextIcon className="size-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">{draft.title}</p>
+                    <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+                      {draft.preview}
+                    </p>
+                    <p className="text-muted-foreground mt-2 text-xs">
+                      {draft.updatedAt}
+                    </p>
+                  </div>
+                </button>
+              ))}
             </div>
-            <select
-              className="bg-background border-input text-primary h-10 cursor-pointer rounded-full border px-5 pr-11 text-sm outline-none"
-              value={postType}
-              onChange={(event) => setPostType(event.target.value)}
-            >
-              <option value="everyone">Everyone</option>
-              <option value="followers">Followers</option>
-              <option value="private">Only me</option>
-            </select>
           </div>
-
-          <textarea
-            id="dialogPostContent"
-            rows={4}
-            placeholder="What are you upto?"
-            className="placeholder:text-muted-foreground mb-5 min-h-[120px] w-full resize-none bg-transparent text-2xl leading-tight outline-none"
-            value={postContent}
-            onChange={(event) => setPostContent(event.target.value)}
-          />
-
-          <div className="mb-4 grid gap-3 md:grid-cols-2">
-            <select
-              id="dialogRepo"
-              className="bg-background border-input h-10 cursor-pointer rounded-xl border px-3 text-sm outline-none"
-              value={selectedRepo}
-              onChange={(event) => setSelectedRepo(event.target.value)}
-            >
-              <option value="" disabled>
-                Select repository
-              </option>
-              <option value="oliver-web">oliver-web</option>
-              <option value="oliver-cli">oliver-cli</option>
-              <option value="infra-scripts">infra-scripts</option>
-            </select>
-
-            <select
-              id="dialogCommit"
-              className="bg-background border-input h-10 cursor-pointer rounded-xl border px-3 text-sm outline-none"
-              value={selectedCommit}
-              onChange={(event) => setSelectedCommit(event.target.value)}
-            >
-              <option value="" disabled>
-                Select commit
-              </option>
-              <option value="a1b2c3d">
-                a1b2c3d - Improve post composer spacing
-              </option>
-              <option value="d4e5f6g">d4e5f6g - Add draft list page</option>
-              <option value="h7i8j9k">h7i8j9k - Refactor sidebar routing</option>
-            </select>
-          </div>
-
-          <div className="border-border mt-auto border-t pt-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-primary flex items-center gap-3">
-                <button
-                  type="button"
-                  className="hover:bg-primary/10 cursor-pointer rounded-full p-2"
-                >
-                  <ImageIcon className="size-5" />
-                </button>
-                <button
-                  type="button"
-                  className="hover:bg-primary/10 cursor-pointer rounded-full p-2"
-                >
-                  <SmileIcon className="size-5" />
-                </button>
-                <button
-                  type="button"
-                  className="hover:bg-primary/10 cursor-pointer rounded-full p-2"
-                >
-                  <MapPinIcon className="size-5" />
-                </button>
+        ) : (
+          <form
+            className="flex h-full flex-col px-6 pb-5"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <div className="mb-5 flex items-center gap-4">
+              <div className="bg-muted ring-border text-foreground flex h-14 w-14 items-center justify-center rounded-full ring-2 text-sm font-semibold">
+                {displayName.slice(0, 1).toUpperCase()}
               </div>
-
-              <Button type="submit" className="cursor-pointer rounded-full px-8">
-                Post
-              </Button>
+            <div className="relative">
+              <select
+                className="bg-background border-input text-primary h-10 cursor-pointer appearance-none rounded-full border px-5 pr-14 text-sm outline-none"
+                value={postType}
+                onChange={(event) => setPostType(event.target.value)}
+              >
+                <option value="everyone">Everyone</option>
+                <option value="followers">Followers</option>
+                <option value="private">Only me</option>
+              </select>
+              <ChevronDownIcon className="text-muted-foreground pointer-events-none absolute right-5 top-1/2 size-4 -translate-y-1/2" />
             </div>
           </div>
-        </form>
+
+            <textarea
+              id="dialogPostContent"
+              rows={4}
+              placeholder="What are you upto?"
+              className="placeholder:text-muted-foreground mb-5 min-h-[120px] w-full resize-none bg-transparent text-2xl leading-tight outline-none"
+              value={postContent}
+              onChange={(event) => setPostContent(event.target.value)}
+            />
+
+            <div className="mb-4 grid gap-3 md:grid-cols-2">
+              <select
+                id="dialogRepo"
+                className="bg-background border-input h-10 cursor-pointer rounded-xl border px-3 text-sm outline-none"
+                value={selectedRepo}
+                onChange={(event) => setSelectedRepo(event.target.value)}
+              >
+                <option value="" disabled>
+                  Select repository
+                </option>
+                <option value="oliver-web">oliver-web</option>
+                <option value="oliver-cli">oliver-cli</option>
+                <option value="infra-scripts">infra-scripts</option>
+              </select>
+
+              <select
+                id="dialogCommit"
+                className="bg-background border-input h-10 cursor-pointer rounded-xl border px-3 text-sm outline-none"
+                value={selectedCommit}
+                onChange={(event) => setSelectedCommit(event.target.value)}
+              >
+                <option value="" disabled>
+                  Select commit
+                </option>
+                <option value="a1b2c3d">
+                  a1b2c3d - Improve post composer spacing
+                </option>
+                <option value="d4e5f6g">d4e5f6g - Add draft list page</option>
+                <option value="h7i8j9k">h7i8j9k - Refactor sidebar routing</option>
+              </select>
+            </div>
+
+            <div className="border-border mt-auto border-t pt-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="text-primary flex items-center gap-3">
+                  <button
+                    type="button"
+                    className="hover:bg-primary/10 cursor-pointer rounded-full p-2"
+                  >
+                    <ImageIcon className="size-5" />
+                  </button>
+                  <button
+                    type="button"
+                    className="hover:bg-primary/10 cursor-pointer rounded-full p-2"
+                  >
+                    <SmileIcon className="size-5" />
+                  </button>
+                  <button
+                    type="button"
+                    className="hover:bg-primary/10 cursor-pointer rounded-full p-2"
+                  >
+                    <MapPinIcon className="size-5" />
+                  </button>
+                </div>
+
+                <Button type="submit" className="cursor-pointer rounded-full px-8">
+                  Post
+                </Button>
+              </div>
+            </div>
+          </form>
+        )}
 
         {showClosePrompt ? (
           <div className="bg-foreground/45 absolute inset-0 flex items-center justify-center p-4">
