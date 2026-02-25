@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Group01Icon,
   Home01Icon,
@@ -17,19 +18,8 @@ import type { ComponentType } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useUser } from "@/hooks/useUser";
+import CreatePostModal from "./create-post-modal";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +30,7 @@ import {
 const Sidebar = () => {
   const { user } = useUser();
   const router = useRouter();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const navLinks: {
     name: string;
@@ -104,82 +95,20 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="w-full">
-            <AddSquareIcon className="size-4" />
-            Create Post
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader className="-space-y-1">
-            <p className="text-muted-foreground text-xs uppercase tracking-[0.18em]">
-              Create
-            </p>
-            <DialogTitle className="font-serif text-2xl">
-              Write a new post
-            </DialogTitle>
-            <DialogDescription>
-              Draft a text update or link your post to a commit.
-            </DialogDescription>
-          </DialogHeader>
-
-          <form
-            className="space-y-4"
-            onSubmit={(event) => event.preventDefault()}
-          >
-            <div className="space-y-2">
-              <label htmlFor="dialogPostTitle" className="text-sm font-medium">
-                Title
-              </label>
-              <Input
-                id="dialogPostTitle"
-                placeholder="Ship notes, daily build log, or release update"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="dialogPostContent"
-                className="text-sm font-medium"
-              >
-                Content
-              </label>
-              <Textarea
-                id="dialogPostContent"
-                rows={6}
-                placeholder="What did you build today? Share context, decisions, and next steps."
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="dialogCommitLink" className="text-sm font-medium">
-                Commit URL (optional)
-              </label>
-              <Input
-                id="dialogCommitLink"
-                placeholder="https://github.com/user/repo/commit/..."
-              />
-            </div>
-
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button type="submit">Publish Post</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <Button
+        className="w-full cursor-pointer"
+        onClick={() => setIsCreateOpen(true)}
+      >
+        <AddSquareIcon className="size-4" />
+        Create Post
+      </Button>
 
       <div className="mt-auto pb-1">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-12 w-full items-center justify-start gap-3"
+              className="h-12 w-full cursor-pointer items-center justify-start gap-3"
             >
               <UserCircleIcon className="size-5" />
               <div className="flex min-w-0 flex-col items-start">
@@ -211,6 +140,12 @@ const Sidebar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <CreatePostModal
+        isOpen={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+        displayName={displayName}
+      />
     </aside>
   );
 };
